@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.db import transaction
 from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from django.views.generic import TemplateView
 
@@ -87,6 +88,7 @@ def long_logout(request):
     })
 
 
+@csrf_exempt
 def register_user(request):
     def response(status, error):
         return HttpResponse(json.dumps({"status": status, "error": error}))
