@@ -1,3 +1,6 @@
+# Ошибки
+better_exceptions
+
 # Framework
 Django==2.2.13
 
