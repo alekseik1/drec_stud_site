@@ -167,13 +167,24 @@ async def registration_finish(message: Message, **kwargs):
                     error = e
                 if error is not None:
                     if isinstance(error, dict) and error.get("status") == "fail":
-                        logger.info(f"{message.from_id}: user input problem: {error}")
-                        await message.answer(
-                            message=f"Кажется, ошибка в вводе данных: {error.get('error')}\n\n"
-                            f"Проверь данные и попробуй зарегистрироваться еще раз. "
-                            f"Если совсем ничего не получается, пиши @id{TECHNICAL_ADMIN_ID}",
-                            keyboard=build_keyboard(is_admin=is_admin(user_id)),
-                        )
+
+                        # TODO: получше проверку на key duplicates от бекенда
+                        if "already exists" in error.get("error"):
+                            logger.info(f"{user_id}: already registered, error={error}")
+                            await message.answer(
+                                message=f"На сайте уже есть пользователь с таким VK ID."
+                                f"\n"
+                                f'Попробуй зайти на сайт через кнопку "Войти через VK"',
+                                keyboard=build_keyboard(is_admin=is_admin(user_id)),
+                            )
+                        else:
+                            logger.info(f"{user_id}: user input problem: {error}")
+                            await message.answer(
+                                message=f"Кажется, ошибка в вводе данных: {error.get('error')}\n\n"
+                                f"Проверь данные и попробуй зарегистрироваться еще раз. "
+                                f"Если совсем ничего не получается, пиши @id{TECHNICAL_ADMIN_ID}",
+                                keyboard=build_keyboard(is_admin=is_admin(user_id)),
+                            )
 
                     else:
                         logger.error(
