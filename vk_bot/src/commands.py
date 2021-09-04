@@ -85,14 +85,14 @@ class RegistrationDataCorrect(CommandBase):
 
 
 regular_commands = [
-    AdminOpenLock5,
-    AdminOpenLock6,
+    # AdminOpenLock5,
+    # AdminOpenLock6,
     HelpCommand,
-    GetPasswordCommand,
+    # GetPasswordCommand,
     ReportProblemStart,
 ]
 
 admin_commands = [
-    AdminCloseLock5,
-    AdminCloseLock6,
+    # AdminCloseLock5,
+    # AdminCloseLock6,
 ]
