@@ -50,6 +50,15 @@ async def process_door_command(
     message: Message, room_id: str, display_room_name: str, do_open: bool
 ):
     """Открыть/закрыть дверь с уведомлением в ЛС."""
+    # NOTE: уберите, когда починят замки
+    await message.answer(
+        message="В настоящее время электронные замки не работают, и я не могу открыть дверь."
+        "\n"
+        "\n"
+        "Почитай в руководстве в группе, как открыть дверь.",
+        keyboard=build_keyboard(is_admin=is_admin(message.from_id)),
+    )
+    return
     # Для не-админов нужна проверка
     if not await is_eligible_to_open_door(message.from_id, room_id):
 
