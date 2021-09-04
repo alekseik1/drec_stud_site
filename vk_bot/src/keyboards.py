@@ -32,7 +32,10 @@ def build_keyboard(is_admin: bool = False):
     )
     keyboard.row()
 
-    for command in [GetPasswordCommand, HelpCommand]:
+    for command in [
+        # GetPasswordCommand,
+        HelpCommand,
+    ]:
         keyboard.add(
             Text(command.button_name, payload={"cmd": command.key}),
             color=KeyboardButtonColor.SECONDARY,
