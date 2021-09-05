@@ -8,5 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 RUN chmod +x ./entrypoint.sh
-ENV BETTER_EXCEPTIONS=1
 ENTRYPOINT ["./entrypoint.sh"]
