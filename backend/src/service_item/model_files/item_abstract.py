@@ -12,6 +12,7 @@ from utils.model_aliases import DefaultImageField
 
 from .working_time import WorkingTime, WorkingTimeException, get_working_time_query, get_working_time_exception_query
 from .timetable import Timetable, TimetableList, TimetableOrder
+from ..utils import to_dt
 
 # Return database filter to ServiceAbstract
 
