@@ -21,7 +21,7 @@ def _check_valid(v, s):
 
 # Николай Андреевич Римский-Корсаков
 def is_valid_name(s):
-    _name_valid = re.compile(r"^([А-Я|Ё]([а-я|ё]+)([-| ]?))+$")
+    _name_valid = re.compile(r"^([А-ЯA-Z|Ё]([а-яa-z|ё]+)([-| ]?))+$")
     return _check_valid(_name_valid, s = s)
 
 # +7-(900)-0(0)0-00-00
