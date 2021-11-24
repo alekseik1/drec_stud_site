@@ -24,6 +24,7 @@ async def send_emergency_password(message: Message, redis: aioredis.Redis):
         message="В настоящий момент эта функция отключена",
         keyboard=build_keyboard(is_admin=is_admin(user_id)),
     )
+    return
     password = await get_password_from_redis(redis, user_id=user_id)
     if not password:
         answer = f"Не получилось найти. Напиши @id{TECHNICAL_ADMIN_ID} (сюда) об этом"
