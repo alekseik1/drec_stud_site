@@ -6,7 +6,6 @@ from src.settings import ADMIN_HARDCODED_LIST
 from src.utils import process_door_command
 
 
-@pytest.mark.skip("Не работает, пока замки не починят")
 @pytest.mark.asyncio
 @pytest.mark.unit
 @parametrize_with_cases(cases=".cases_service_id", argnames="service_id")
@@ -35,7 +34,6 @@ async def test_admin_can_open_anytime(
     lockbox_mock.assert_called_once()
 
 
-@pytest.mark.skip("Не работает, пока замки не починят")
 @pytest.mark.asyncio
 @pytest.mark.unit
 @parametrize_with_cases(cases=".cases_service_id", argnames="service_id")
