@@ -5,6 +5,7 @@ python-dotenv
 fakeredis
 pytest
 pytest-cases
+pytest-coverage
 pytest-asyncio
 pytest-mock
 loguru
