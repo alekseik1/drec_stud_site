@@ -9,10 +9,10 @@ def build_keyboard(is_admin: bool = False):
         Text(AdminOpenLock5.button_name, payload={"cmd": AdminOpenLock5.key}),
         color=KeyboardButtonColor.PRIMARY,
     )
-    keyboard.add(
-        Text(AdminOpenLock6.button_name, payload={"cmd": AdminOpenLock6.key}),
-        color=KeyboardButtonColor.PRIMARY,
-    )
+    # keyboard.add(
+    #     Text(AdminOpenLock6.button_name, payload={"cmd": AdminOpenLock6.key}),
+    #     color=KeyboardButtonColor.PRIMARY,
+    # )
     keyboard.row()
     if is_admin:
         keyboard.add(
