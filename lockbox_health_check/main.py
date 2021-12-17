@@ -50,7 +50,7 @@ if __name__ == "__main__":
         asyncio.gather(
             *[
                 check_lock(ip=ip, display_name=display_name)
-                for ip, display_name in (("10.55.99.5", "5b"), ("10.55.99.6", "6b"))
+                for ip, display_name in (("10.55.99.5", "5b"), ("93.175.8.44", "6b"))
             ]
         )
     )
