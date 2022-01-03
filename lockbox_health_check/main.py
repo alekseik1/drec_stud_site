@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 
 import aiohttp
-from aiohttp.client_exceptions import ClientConnectorError
 from loguru import logger
 
 basedir = Path(__file__).parent
