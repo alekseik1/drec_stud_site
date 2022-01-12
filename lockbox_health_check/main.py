@@ -14,7 +14,7 @@ async def poke_lockbox(ip: str, port: int = 8085) -> bool:
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(
-                    f"http://{ip}:{port}/health_check", timeout=3
+                    f"http://{ip}:{port}/health_check", timeout=10
             ) as r:
                 if r.status != 200:
                     return False
