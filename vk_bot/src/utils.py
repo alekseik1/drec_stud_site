@@ -32,6 +32,7 @@ async def fpmi_check(vk_id: int, room_id: str):
     :param vk_id: id ВК без "id" в начале
     :param room_id: id комнаты, "5b" или "6b"
     """
+    logger.info(f"vk_id={vk_id}, room_id={room_id}")
     async with aiohttp.ClientSession(
         headers={"stfpmi-sa-auth-token": os.environ["SA_TOKEN"]}
     ) as session:
@@ -43,7 +44,7 @@ async def fpmi_check(vk_id: int, room_id: str):
                 resp = await r.json()  # ["username"]
                 if "username" not in resp:
                     logger.info(
-                        "user does not exist in FPMI database, return False. room_id={room_id}, vk_id={vk_id}"
+                        f"user does not exist in FPMI database, return False. room_id={room_id}, vk_id={vk_id}"
                     )
                     return False
                 username = resp["username"]
@@ -75,26 +76,34 @@ async def is_eligible_to_open_door(vk_id: int, room_id: str):
     Ходит на Django и у него спрашивает это
     """
     logger.info(f"checking id {vk_id}")
-    fpmi_status = await fpmi_check(vk_id, room_id)
+    try:
+        fpmi_status = await fpmi_check(vk_id, room_id)
+    except Exception as e:
+        logger.error(f"unknown error: {e}")
+        fpmi_status = False
     if vk_id in ADMIN_HARDCODED_LIST:
         logger.info(f"{vk_id} is admin, permitting")
         old_status = True
     else:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                UNLOCK_CHECK_URL.format(
-                    service_id={"5b": 2, "6b": 1}.get(room_id),
-                ),
-                params={"vk_id": vk_id},
-            ) as resp:
-                text = await resp.text()
-                response = json.loads(text)
-                if response.get("status", "no") in ["yes", "true", "True"]:
-                    logger.info("server responded with `yes`, permitting")
-                    old_status = True
-                else:
-                    logger.info("server responded with `no`, denying")
-                    old_status = False
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    UNLOCK_CHECK_URL.format(
+                        service_id={"5b": 2, "6b": 1}.get(room_id),
+                    ),
+                    params={"vk_id": vk_id},
+                ) as resp:
+                    text = await resp.text()
+                    response = json.loads(text)
+                    if response.get("status", "no") in ["yes", "true", "True"]:
+                        logger.info("server responded with `yes`, permitting")
+                        old_status = True
+                    else:
+                        logger.info("server responded with `no`, denying")
+                        old_status = False
+        except Exception as e:
+            logger.error(f"unknown error: {e}")
+            old_status = False
     return old_status or fpmi_status
 
 
