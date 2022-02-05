@@ -9,7 +9,7 @@ from vkbottle.tools.dev_tools.mini_types.bot.message import MessageMin
 
 from src.keyboards import build_keyboard
 from src.lockbox_api import send_signal_door_close, send_signal_door_open
-from src.settings import ADMIN_HARDCODED_LIST, UNLOCK_CHECK_URL
+from src.settings import ADMIN_HARDCODED_LIST, FPMI_API_SERVER, UNLOCK_CHECK_URL
 
 
 def get_event_payload_cmd(event: MessageMin) -> Union[str, None]:
@@ -20,30 +20,75 @@ def get_event_payload_cmd(event: MessageMin) -> Union[str, None]:
     return payload.get("cmd")
 
 
+async def fpmi_check(vk_id: int, room_id: str):
+    """Проверить на сайте ФПМИ, можно ли открыть замки.
+
+    На 2022-02-05 есть только апиха открыть замки по username, поэтому
+    сначала получаем username по vk_id, потом стучимся от лица замка на
+    сайт.
+
+    **Требует** env variable: SA_TOKEN, 5B_TOKEN, 6B_TOKEN
+
+    :param vk_id: id ВК без "id" в начале
+    :param room_id: id комнаты, "5b" или "6b"
+    """
+    async with aiohttp.ClientSession(
+        headers={"stfpmi-sa-auth-token": os.environ["SA_TOKEN"]}
+    ) as session:
+        # username по vk_id
+        async with session.get(
+            f"{FPMI_API_SERVER}/api/service_accounts/get_user_by_vk_id/{vk_id}"
+        ) as r:
+            try:
+                username = (await r.json())["username"]
+            except aiohttp.ContentTypeError:
+                logger.warning(
+                    f"could not parse username from FPMI, returning False. room_id={room_id}, vk_id={vk_id}"
+                )
+        async with session.post(
+            f"{FPMI_API_SERVER}/api/lock",
+            # NOTE требует 5B_TOKEN, 6B_TOKEN и т.п.
+            json={
+                "token": os.environ[f"{room_id.upper()}_TOKEN"],
+                "username": username,
+            },
+        ) as r:
+            text = await r.text()
+            if r.status == 200:
+                logger.info(f"FPMI site response 200, opening. text={text}")
+                return True
+            else:
+                logger.info(f"FPMI site response != 200, denied. text={text}")
+                return False
+
+
 async def is_eligible_to_open_door(vk_id: int, room_id: str):
     """Проверка, может ли юзер открыть дверь.
 
     Ходит на Django и у него спрашивает это
     """
     logger.info(f"checking id {vk_id}")
+    fpmi_status = await fpmi_check(vk_id, room_id)
     if vk_id in ADMIN_HARDCODED_LIST:
         logger.info(f"{vk_id} is admin, permitting")
-        return True
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            UNLOCK_CHECK_URL.format(
-                service_id={"5b": 2, "6b": 1}.get(room_id),
-            ),
-            params={"vk_id": vk_id},
-        ) as resp:
-            text = await resp.text()
-            response = json.loads(text)
-            if response.get("status", "no") in ["yes", "true", "True"]:
-                logger.info("server responded with `yes`, permitting")
-                return True
-            else:
-                logger.info("server responded with `no`, denying")
-                return False
+        old_status = True
+    else:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                UNLOCK_CHECK_URL.format(
+                    service_id={"5b": 2, "6b": 1}.get(room_id),
+                ),
+                params={"vk_id": vk_id},
+            ) as resp:
+                text = await resp.text()
+                response = json.loads(text)
+                if response.get("status", "no") in ["yes", "true", "True"]:
+                    logger.info("server responded with `yes`, permitting")
+                    old_status = True
+                else:
+                    logger.info("server responded with `no`, denying")
+                    old_status = False
+    return old_status or fpmi_status
 
 
 async def process_door_command(
