@@ -40,11 +40,18 @@ async def fpmi_check(vk_id: int, room_id: str):
             f"{FPMI_API_SERVER}/api/service_accounts/get_user_by_vk_id/{vk_id}"
         ) as r:
             try:
-                username = (await r.json())["username"]
+                resp = await r.json()  # ["username"]
+                if "username" not in resp:
+                    logger.info(
+                        "user does not exist in FPMI database, return False. room_id={room_id}, vk_id={vk_id}"
+                    )
+                    return False
+                username = resp["username"]
             except aiohttp.ContentTypeError:
                 logger.warning(
                     f"could not parse username from FPMI, returning False. room_id={room_id}, vk_id={vk_id}"
                 )
+                return False
         async with session.post(
             f"{FPMI_API_SERVER}/api/lock",
             # NOTE требует 5B_TOKEN, 6B_TOKEN и т.п.
