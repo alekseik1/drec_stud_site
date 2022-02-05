@@ -36,6 +36,6 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Test with pytest
         run: |
-          pytest -vv -l --tb=long
+          pytest -vv -l --tb=long -m "not integration"
         env:
           ACCESS_TOKEN: hellothere
