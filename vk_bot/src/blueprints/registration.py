@@ -34,6 +34,8 @@ async def start_registration(message: Message):
         message="В настоящий момент эта функция отключена",
         keyboard=build_keyboard(is_admin=is_admin(user_id)),
     )
+    await bl.state_dispenser.set(user_id, RegistrationStates.DEFAULT)
+    return
     user_id = message.from_id
     if await is_registered(user_id):
         logger.info(f"{message.from_id}: user is already registered, rejecting")
@@ -60,6 +62,8 @@ async def process_group_entry(message: Message, **kwargs):
         message="В настоящий момент эта функция отключена",
         keyboard=build_keyboard(is_admin=is_admin(user_id)),
     )
+    await bl.state_dispenser.set(user_id, RegistrationStates.DEFAULT)
+    return
     group_number = message.text
     if message.text == GoBackwards.button_name:
         await bl.state_dispenser.set(user_id, RegistrationStates.DEFAULT)
@@ -89,6 +93,8 @@ async def process_room_entry(message: Message, **kwargs):
         message="В настоящий момент эта функция отключена",
         keyboard=build_keyboard(is_admin=is_admin(user_id)),
     )
+    await bl.state_dispenser.set(user_id, RegistrationStates.DEFAULT)
+    return
     room_number = message.text
     if message.text == GoBackwards.button_name:
         await bl.state_dispenser.set(user_id, RegistrationStates.WRITING_GROUP_NUMBER)
@@ -133,6 +139,8 @@ async def registration_finish(message: Message, **kwargs):
         message="В настоящий момент эта функция отключена",
         keyboard=build_keyboard(is_admin=is_admin(user_id)),
     )
+    await bl.state_dispenser.set(user_id, RegistrationStates.DEFAULT)
+    return
     if message.text == GoBackwards.button_name:
         await bl.state_dispenser.set(user_id, RegistrationStates.WRITING_ROOM_NUMBER)
         logger.info(f"{message.from_id}: back to WRITING_ROOM_NUMBER")
