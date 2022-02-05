@@ -3,7 +3,7 @@ aiohttp
 coverage
 python-dotenv
 fakeredis
-pytest
+pytest==6.2.4
 pytest-cases
 pytest-coverage
 pytest-asyncio
