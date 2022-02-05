@@ -30,6 +30,11 @@ async def is_registered(user_id: int) -> bool:
 @bl.labeler.message(payload={"cmd": RegistrationStart.key})
 async def start_registration(message: Message):
     user_id = message.from_id
+    await message.answer(
+        message="В настоящий момент эта функция отключена",
+        keyboard=build_keyboard(is_admin=is_admin(user_id)),
+    )
+    user_id = message.from_id
     if await is_registered(user_id):
         logger.info(f"{message.from_id}: user is already registered, rejecting")
         await message.answer(
@@ -51,6 +56,10 @@ async def start_registration(message: Message):
 @bl.labeler.message(state=RegistrationStates.WRITING_GROUP_NUMBER)
 async def process_group_entry(message: Message, **kwargs):
     user_id = message.from_id
+    await message.answer(
+        message="В настоящий момент эта функция отключена",
+        keyboard=build_keyboard(is_admin=is_admin(user_id)),
+    )
     group_number = message.text
     if message.text == GoBackwards.button_name:
         await bl.state_dispenser.set(user_id, RegistrationStates.DEFAULT)
@@ -76,6 +85,10 @@ async def process_group_entry(message: Message, **kwargs):
 @bl.labeler.message(state=RegistrationStates.WRITING_ROOM_NUMBER)
 async def process_room_entry(message: Message, **kwargs):
     user_id = message.from_id
+    await message.answer(
+        message="В настоящий момент эта функция отключена",
+        keyboard=build_keyboard(is_admin=is_admin(user_id)),
+    )
     room_number = message.text
     if message.text == GoBackwards.button_name:
         await bl.state_dispenser.set(user_id, RegistrationStates.WRITING_GROUP_NUMBER)
@@ -116,6 +129,10 @@ async def process_room_entry(message: Message, **kwargs):
 @bl.labeler.message(state=RegistrationStates.APPROVING_INPUT)
 async def registration_finish(message: Message, **kwargs):
     user_id = message.from_id
+    await message.answer(
+        message="В настоящий момент эта функция отключена",
+        keyboard=build_keyboard(is_admin=is_admin(user_id)),
+    )
     if message.text == GoBackwards.button_name:
         await bl.state_dispenser.set(user_id, RegistrationStates.WRITING_ROOM_NUMBER)
         logger.info(f"{message.from_id}: back to WRITING_ROOM_NUMBER")

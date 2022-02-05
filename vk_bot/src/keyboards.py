@@ -15,11 +15,11 @@ def build_keyboard(is_admin: bool = False):
     )
     keyboard.row()
 
-    keyboard.add(
-        Text(RegistrationStart.button_name, payload={"cmd": RegistrationStart.key}),
-        color=KeyboardButtonColor.SECONDARY,
-    )
-    keyboard.row()
+    # keyboard.add(
+    #     Text(RegistrationStart.button_name, payload={"cmd": RegistrationStart.key}),
+    #     color=KeyboardButtonColor.SECONDARY,
+    # )
+    # keyboard.row()
 
     for command in [
         # GetPasswordCommand,
