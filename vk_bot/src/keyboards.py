@@ -14,16 +14,6 @@ def build_keyboard(is_admin: bool = False):
         color=KeyboardButtonColor.PRIMARY,
     )
     keyboard.row()
-    if is_admin:
-        keyboard.add(
-            Text(AdminCloseLock5.button_name, payload={"cmd": AdminCloseLock5.key}),
-            color=KeyboardButtonColor.PRIMARY,
-        )
-        keyboard.add(
-            Text(AdminCloseLock6.button_name, payload={"cmd": AdminCloseLock6.key}),
-            color=KeyboardButtonColor.PRIMARY,
-        )
-        keyboard.row()
 
     keyboard.add(
         Text(RegistrationStart.button_name, payload={"cmd": RegistrationStart.key}),
