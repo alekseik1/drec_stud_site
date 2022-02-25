@@ -4,7 +4,7 @@ from typing import Tuple
 import aiohttp
 from loguru import logger
 
-BASE_DOOR_URL = "http://8ka.mipt.ru/lockbox/{room_name}/{device}/{command}"
+BASE_DOOR_URL = "http://nginx/lockbox/{room_name}/{device}/{command}"
 
 
 async def perform_lockbox_request(url: str) -> Tuple[int, str]:
