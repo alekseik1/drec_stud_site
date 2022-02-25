@@ -76,6 +76,7 @@ async def is_eligible_to_open_door(vk_id: int, room_id: str):
     Ходит на Django и у него спрашивает это
     """
     logger.info(f"checking id {vk_id}")
+    old_status = False
     try:
         fpmi_status = await fpmi_check(vk_id, room_id)
     except Exception as e:
@@ -85,25 +86,26 @@ async def is_eligible_to_open_door(vk_id: int, room_id: str):
         logger.info(f"{vk_id} is admin, permitting")
         old_status = True
     else:
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    UNLOCK_CHECK_URL.format(
-                        service_id={"5b": 2, "6b": 1}.get(room_id),
-                    ),
-                    params={"vk_id": vk_id},
-                ) as resp:
-                    text = await resp.text()
-                    response = json.loads(text)
-                    if response.get("status", "no") in ["yes", "true", "True"]:
-                        logger.info("server responded with `yes`, permitting")
-                        old_status = True
-                    else:
-                        logger.info("server responded with `no`, denying")
-                        old_status = False
-        except Exception as e:
-            logger.error(f"unknown error: {e}")
-            old_status = False
+        pass
+        # try:
+        #     async with aiohttp.ClientSession() as session:
+        #         async with session.get(
+        #             UNLOCK_CHECK_URL.format(
+        #                 service_id={"5b": 2, "6b": 1}.get(room_id),
+        #             ),
+        #             params={"vk_id": vk_id},
+        #         ) as resp:
+        #             text = await resp.text()
+        #             response = json.loads(text)
+        #             if response.get("status", "no") in ["yes", "true", "True"]:
+        #                 logger.info("server responded with `yes`, permitting")
+        #                 old_status = True
+        #             else:
+        #                 logger.info("server responded with `no`, denying")
+        #                 old_status = False
+        # except Exception as e:
+        #     logger.error(f"unknown error: {e}")
+        #     old_status = False
     return old_status or fpmi_status
 
 
