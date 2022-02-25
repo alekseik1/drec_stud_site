@@ -141,8 +141,15 @@ async def process_door_command(
         return
     if status != 200:
         logger.error(
-            f"response is invalid | status = {status} | content={content_text}"
+            f"response is invalid | room_id={room_id} | status = {status} | content={content_text}"
         )
+        if status == 502:
+            await message.answer(
+                message=f"""Не удалось подключиться к замку. Подожди минуту-другую и попробуй еще раз.
+                \n
+                Если это не поможет, жми кнопку "Помощь" и проси админа впустить.
+                """
+            )
         await message.answer(
             message=f"Запрос вернул status_code={status} != 200, так не должно быть. "
             f"Вот контент: {content_text}",
