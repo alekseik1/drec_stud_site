@@ -143,7 +143,7 @@ async def process_door_command(
         logger.error(
             f"response is invalid | room_id={room_id} | status = {status} | content={content_text}"
         )
-        if status == 502:
+        if status == 504:
             await message.answer(
                 message=f"""Не удалось подключиться к замку. Подожди минуту-другую и попробуй еще раз.
                 \n
