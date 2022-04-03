@@ -123,6 +123,7 @@ services:
     image: alekseik1/8ka_lockbox_health_check:latest
     volumes:
       - ./lockbox_health_check/logs:/app/logs:rw
+    network_mode: host
 
 volumes:
   pg_data:

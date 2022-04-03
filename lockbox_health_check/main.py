@@ -13,19 +13,24 @@ MAX_ATTEMPTS, DELAY_AFTER = 5, 60
 async def poke_lockbox(ip: str, port: int = 8085) -> bool:
     async with aiohttp.ClientSession() as session:
         try:
+            logger.debug("running session.get")
             async with session.get(
                     f"http://{ip}:{port}/health_check", timeout=10
             ) as r:
                 if r.status != 200:
+                    logger.debug('status code != 200, returning False')
                     return False
         except Exception as e:
+            logger.debug(f"error happened {e}, returning False")
             return False
+    logger.debug("looks like ok, returning True")
     return True
 
 
 async def check_lock(ip: str, display_name: str, port: int = 8085):
     while True:
         for attempt in range(MAX_ATTEMPTS):
+            logger.debug(f"running attempt {attempt}")
             is_alive = await poke_lockbox(ip, port)
             if is_alive:
                 break
