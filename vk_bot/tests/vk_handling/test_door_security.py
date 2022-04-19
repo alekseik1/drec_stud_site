@@ -40,6 +40,7 @@ async def test_admin_can_open_anytime(
 
 
 @pytest.mark.asyncio
+@pytest.mark.skip(reason="Not actual after disabling of the old server")
 @pytest.mark.unit
 @parametrize_with_cases(cases=".cases_service_id", argnames="service_id")
 @parametrize_with_cases(
