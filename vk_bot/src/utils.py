@@ -37,11 +37,15 @@ async def fpmi_check(vk_id: int, room_id: str):
         headers={"stfpmi-sa-auth-token": os.environ["SA_TOKEN"]}
     ) as session:
         # username по vk_id
+        logger.debug(
+            f"requesting get_user_by_vk_id for vk_id={vk_id} on server {FPMI_API_SERVER}"
+        )
         async with session.get(
             f"{FPMI_API_SERVER}/api/service_accounts/get_user_by_vk_id/{vk_id}"
         ) as r:
             try:
                 resp = await r.json()  # ["username"]
+                logger.debug(f"received JSON response {resp}")
                 if "username" not in resp:
                     logger.info(
                         f"user does not exist in FPMI database, return False. room_id={room_id}, vk_id={vk_id}"
